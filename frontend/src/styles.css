@@ -1,0 +1,179 @@
+:root{
+  /* Primary palette - override these for theming */
+  --bg: #0b0f14;
+  --panel: #0f1720;
+  --muted: #9aa4b2;
+  --accent: #7c5cff;
+  --text: #e6eef6;
+
+  /* Layout sizing */
+  --sidebar-width: 260px;
+  --chat-width: 360px;
+}
+
+*{box-sizing:border-box}
+html,body,#root{height:100%;}
+body{margin:0;font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;color:var(--text);background:linear-gradient(180deg,#050608 0%, #0b0f14 100%)}
+
+.app-root{display:grid;height:100vh;grid-template-columns:var(--sidebar-width) 1fr var(--chat-width);grid-template-rows:60px 1fr;grid-template-areas:"sidebar topbar chat" "sidebar main chat"}
+.sidebar{grid-area:sidebar;background:linear-gradient(180deg, #0d1117, #0b0f14);padding:16px;overflow:auto}
+.sidebar h2{margin:0 0 12px 0;color:var(--accent)}
+.topbar{grid-area:topbar;display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid rgba(255,255,255,0.03)}
+.main{grid-area:main;display:flex;align-items:stretch}
+.map-area{flex:1;padding:12px}
+.assistant-area{grid-area:chat;border-left:1px solid rgba(255,255,255,0.03);display:flex;flex-direction:column;padding:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent)}
+
+.leaderboard .player{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.02)}
+.controls .btn{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--text);padding:8px 12px;margin-left:8px;border-radius:8px}
+
+.map-wrapper{height:100%;border-radius:8px;overflow:hidden}
+
+/* Chat styles: center messages vertically and horizontally in the chat column */
+.assistant{display:flex;flex-direction:column;height:100%}
+.messages{flex:1;overflow:auto;padding:12px 16px;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:6px;min-height:0}
+.msg{padding:8px 12px;border-radius:10px;margin:0;max-width:80%;width:auto;display:inline-block;align-self:flex-start;border:1px solid rgba(255,255,255,0.04);background:var(--panel);flex:0 0 auto;height:auto;min-height:0}
+.msg .msg-text{white-space:pre-wrap;display:block}
+.msg.user{background:linear-gradient(90deg, rgba(124,92,255,0.18), rgba(124,92,255,0.08));border-color:rgba(124,92,255,0.35);align-self:flex-end;color:#fff}
+.msg.assistant{background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-color:rgba(255,255,255,0.04);align-self:flex-start;color:var(--text)}
+
+/* compose area layout */
+.compose{display:flex;gap:8px;padding:8px;border-top:1px solid rgba(255,255,255,0.03);align-items:flex-end}
+.compose textarea{flex:1;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--text);resize:vertical;min-height:48px}
+.compose .compose-actions{display:flex;flex-direction:column;gap:6px}
+.compose .compose-actions button{padding:8px 12px;border-radius:8px;border:none;background:var(--accent);color:#fff}
+.compose input{flex:1;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:var(--text)}
+.compose button{margin-left:8px;padding:8px 12px;border-radius:8px;border:none;background:var(--accent);color:#fff}
+
+/* Notifications (bottom-left) */
+.notifications-wrapper{position:fixed;left:16px;bottom:16px;display:flex;flex-direction:column;gap:10px;z-index:9999}
+.notification{background:linear-gradient(180deg,#042d18,#06321b);border-left:4px solid rgba(72,187,120,0.95);color:#dfffe6;padding:12px 14px;border-radius:8px;min-width:220px;box-shadow:0 8px 20px rgba(0,0,0,0.6);position:relative;transform:translateY(20px);opacity:0;animation:slideUpFade 360ms cubic-bezier(.22,.98,.24,1) forwards}
+.notification-title{font-weight:600;margin-bottom:4px}
+.notification-message{font-size:13px;color:#eaf9ee}
+.notification-close{position:absolute;right:8px;top:6px;background:transparent;border:none;color:#c9ffe0;font-size:16px;cursor:pointer}
+
+@keyframes slideUpFade{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+/* Confirmation modal for Trigger break */
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+.confirm-modal {
+  background: linear-gradient(180deg, #07121a, #07121a);
+  color: var(--text);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+  width: 320px;
+  max-width: calc(100% - 40px);
+  text-align: center;
+}
+.confirm-title {
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+.confirm-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+.confirm-actions .btn {
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  color: inherit;
+  cursor: pointer;
+}
+.confirm-actions .btn:hover { opacity: 0.95 }
+
+/* Carousel styles - consolidated and responsive */
+.carousel-wrapper{
+  width:100%;
+  padding:8px 6px;
+  animation:fadeIn .28s ease;
+  /* Stretch to the full width of the chat column (not the message bubble) */
+  align-self: stretch;
+}
+
+/* Allow specific messages to be full-width, useful for embedded UI (carousel, maps, etc.)
+   This prevents the message bubble constraints (max-width/inline-block) from limiting
+   injected content while preserving placement in the message sequence. */
+.msg.full-width{display:block;max-width:100%;width:100%;align-self:stretch;padding:0;border:none;background:transparent}
+
+.carousel-inner{
+  display:flex;
+  gap:14px;
+  overflow-x:auto;
+  padding:6px 4px;
+  scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch; /* smooth scrolling on iOS */
+  /* Hide native scrollbars but keep functionality */
+  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* Each card should occupy the chat column width so one card is visible per "window". Use a responsive max-width.
+   The chat column is around 320-360px; use 88% to allow slight padding on small screens and fixed max on large screens. */
+.carousel-card{
+  /* Make each card fill the carousel viewport so one card is visible per view */
+  min-width:100%;
+  max-width:100%;
+  width:100%;
+  background:linear-gradient(180deg,#081017,#0d1720);
+  border:1px solid rgba(255,255,255,0.03);
+  border-radius:10px;
+  padding:0;
+  box-shadow:0 6px 18px rgba(0,0,0,0.5);
+  flex:0 0 100%;
+  scroll-snap-align:center;
+  transition:transform .22s ease,box-shadow .22s ease;
+}
+
+.carousel-card.selected{
+  outline:3px solid rgba(124,92,255,0.25);
+  transform:translateY(-6px);
+  box-shadow:0 12px 28px rgba(0,0,0,0.65);
+}
+
+.carousel-card-btn{
+  display:block;
+  padding:14px;
+  border:none;
+  background:transparent;
+  color:inherit;
+  width:100%;
+  text-align:left;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+.carousel-card-btn:focus{outline:2px solid rgba(124,92,255,0.28)}
+.carousel-card-header{display:flex;flex-direction:column;align-items:flex-start;margin-bottom:8px}
+.carousel-name{font-weight:700;color:var(--accent)}
+.carousel-etas{display:flex;gap:10px;margin-bottom:8px;color:var(--text)}
+.carousel-extra{font-size:13px;color:#cfe9d6;margin-bottom:8px}
+.carousel-actions{text-align:right}
+.carousel-late {color: yellow;display: block;margin-top: 6px;font-size:13px;line-height:1.1}
+
+/* small helper for empty carousel states */
+.carousel-empty{padding:8px;color:var(--muted)}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* WebKit scrollbar styling (single definitions) */
+.carousel-inner::-webkit-scrollbar{height:8px}
+.carousel-inner::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.06);border-radius:8px}
+
+
+/* Splash screen overlay */
+.splash{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#faf9f9;z-index:20000;opacity:1;transition:opacity .8s ease, visibility .8s ease}
+.splash.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.splash-logo{max-width:60%;max-height:60%;object-fit:contain}
+
+
